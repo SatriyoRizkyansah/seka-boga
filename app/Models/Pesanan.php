@@ -39,6 +39,11 @@ class Pesanan extends Model
     ];
 
     // Relationships
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'customer_id');
+    }
+
     public function customer()
     {
         return $this->belongsTo(User::class, 'customer_id');
@@ -78,6 +83,11 @@ class Pesanan extends Model
     public function formatTotalKeseluruhan()
     {
         return $this->total_keseluruhan ? 'Rp ' . number_format($this->total_keseluruhan, 0, ',', '.') : 'Belum ditentukan';
+    }
+
+    public function formatHarga()
+    {
+        return $this->total_keseluruhan ? 'Rp ' . number_format($this->total_keseluruhan, 0, ',', '.') : 'Rp ' . number_format($this->total_harga_produk, 0, ',', '.');
     }
 
     public static function generateKodePesanan()
