@@ -141,10 +141,10 @@
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    @if($produk->gambar->first())
+                                    @if($produk->gambarUtama)
                                         <div class="flex-shrink-0 h-10 w-10">
                                             <img class="h-10 w-10 rounded-full object-cover" 
-                                                 src="{{ asset('storage/' . $produk->gambar->first()->path_gambar) }}" 
+                                                 src="{{ Storage::url($produk->gambarUtama->file_path) }}" 
                                                  alt="{{ $produk->nama_produk }}">
                                         </div>
                                     @endif

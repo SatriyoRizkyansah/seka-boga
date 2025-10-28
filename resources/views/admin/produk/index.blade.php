@@ -56,9 +56,9 @@
                 <div class="flex items-center">
                     <!-- Gambar Produk -->
                     <div class="flex-shrink-0 h-20 w-20">
-                        @if($item->gambar->first())
-                            <img class="h-20 w-20 rounded-lg object-cover" 
-                                 src="{{ asset('storage/' . $item->gambar->first()->path_gambar) }}" 
+                        @if($item->gambarUtama)
+                            <img class="w-16 h-16 rounded-lg object-cover" 
+                                 src="{{ Storage::url($item->gambarUtama->file_path) }}" 
                                  alt="{{ $item->nama_produk }}">
                         @else
                             <div class="h-20 w-20 rounded-lg bg-gray-200 flex items-center justify-center">
@@ -85,7 +85,7 @@
                             <span>•</span>
                             <span>Stok: {{ $item->stok }}</span>
                             <span>•</span>
-                            <span>{{ $item->gambar->count() }} gambar</span>
+                            <span>{{ $item->gambarProduk->count() }} gambar</span>
                         </div>
                         
                         @if($item->deskripsi)

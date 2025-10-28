@@ -16,7 +16,7 @@ class ProdukController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Produk::with(['kategori', 'gambar']);
+        $query = Produk::with(['kategori', 'gambarProduk']);
         
         // Filter by category
         if ($request->kategori) {
@@ -98,7 +98,7 @@ class ProdukController extends Controller
      */
     public function show(Produk $produk)
     {
-        $produk->load(['kategori', 'gambar', 'detailPesanan']);
+        $produk->load(['kategori', 'gambarProduk', 'detailPesanan']);
         return view('admin.produk.show', compact('produk'));
     }
 
@@ -108,7 +108,7 @@ class ProdukController extends Controller
     public function edit(Produk $produk)
     {
         $kategori = KategoriProduk::where('aktif', true)->get();
-        $produk->load('gambar');
+        $produk->load('gambarProduk');
         return view('admin.produk.edit', compact('produk', 'kategori'));
     }
 
@@ -141,7 +141,7 @@ class ProdukController extends Controller
 
         // Handle new images
         if ($request->hasFile('gambar')) {
-            $maxOrder = $produk->gambar()->max('urutan') ?? 0;
+            $maxOrder = $produk->gambarProduk()->max('urutan') ?? 0;
             foreach ($request->file('gambar') as $key => $file) {
                 $path = $file->store('produk', 'public');
                 GambarProduk::create([
@@ -164,7 +164,7 @@ class ProdukController extends Controller
     public function destroy(Produk $produk)
     {
         // Delete all images
-        foreach ($produk->gambar as $gambar) {
+        foreach ($produk->gambarProduk as $gambar) {
             Storage::disk('public')->delete($gambar->path_gambar);
             $gambar->delete();
         }

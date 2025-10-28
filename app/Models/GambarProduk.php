@@ -29,4 +29,10 @@ class GambarProduk extends Model
     {
         return $this->belongsTo(Produk::class);
     }
+
+    // Accessor untuk compatibility dengan file_path
+    public function getFilePathAttribute()
+    {
+        return $this->path_gambar;
+    }
 }

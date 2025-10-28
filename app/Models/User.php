@@ -31,6 +31,30 @@ class User extends Authenticatable
         'aktif',
     ];
 
+    // Accessor untuk nama_lengkap
+    public function getNamaLengkapAttribute()
+    {
+        return $this->name;
+    }
+
+    // Mutator untuk nama_lengkap
+    public function setNamaLengkapAttribute($value)
+    {
+        $this->attributes['name'] = $value;
+    }
+
+    // Accessor untuk alamat
+    public function getAlamatAttribute()
+    {
+        return $this->alamat_lengkap;
+    }
+
+    // Mutator untuk alamat  
+    public function setAlamatAttribute($value)
+    {
+        $this->attributes['alamat_lengkap'] = $value;
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

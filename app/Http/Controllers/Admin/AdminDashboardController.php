@@ -28,7 +28,7 @@ class AdminDashboardController extends Controller
             ->get();
 
         // Menu populer (berdasarkan jumlah pesanan)
-        $menu_populer = Produk::with(['gambar'])
+        $menu_populer = Produk::with(['gambarUtama'])
             ->withCount('detailPesanan')
             ->orderBy('detail_pesanan_count', 'desc')
             ->take(5)

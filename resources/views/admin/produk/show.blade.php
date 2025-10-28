@@ -130,9 +130,9 @@
         <div class="bg-white overflow-hidden shadow rounded-lg">
             <div class="px-4 py-5 sm:p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Gambar Produk</h3>
-                @if($produk->gambar && $produk->gambar->count() > 0)
+                @if($produk->gambarProduk && $produk->gambarProduk->count() > 0)
                     <div class="space-y-4">
-                        @foreach($produk->gambar as $index => $gambar)
+                        @foreach($produk->gambarProduk as $index => $gambar)
                             <div class="text-center">
                                 <img src="{{ asset('storage/' . $gambar->path_gambar) }}" 
                                      alt="{{ $produk->nama_produk }} - {{ $index + 1 }}"

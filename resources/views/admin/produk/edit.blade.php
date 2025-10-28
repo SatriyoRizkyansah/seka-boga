@@ -135,7 +135,7 @@
                 </div>
 
                 <!-- Gambar Saat Ini -->
-                @if($produk->gambar->count() > 0)
+                @if($produk->gambarProduk->count() > 0)
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         Gambar Saat Ini

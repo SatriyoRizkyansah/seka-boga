@@ -4,18 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/dashboard', function () {
-    // Check if user is admin, redirect to admin dashboard
-    if (Auth::check() && Auth::user()->isAdmin()) {
-        return redirect()->route('admin.dashboard');
-    }
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+// Profile routes for admin (keeping compatibility)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -47,12 +36,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{pesanan}', [App\Http\Controllers\OrderController::class, 'show'])->name('customer.orders.show');
     Route::patch('/orders/{pesanan}/cancel', [App\Http\Controllers\OrderController::class, 'cancel'])->name('customer.orders.cancel');
     
-    // Profile Routes
-    Route::get('/profile', [App\Http\Controllers\CustomerProfileController::class, 'show'])->name('customer.profile.show');
-    Route::get('/profile/edit', [App\Http\Controllers\CustomerProfileController::class, 'edit'])->name('customer.profile.edit');
-    Route::put('/profile', [App\Http\Controllers\CustomerProfileController::class, 'update'])->name('customer.profile.update');
-    Route::get('/profile/password', [App\Http\Controllers\CustomerProfileController::class, 'editPassword'])->name('customer.profile.password');
-    Route::put('/profile/password', [App\Http\Controllers\CustomerProfileController::class, 'updatePassword'])->name('customer.profile.password.update');
+    // Customer Profile Routes
+    Route::get('/customer/profile', [App\Http\Controllers\CustomerProfileController::class, 'show'])->name('customer.profile.show');
+    Route::get('/customer/profile/edit', [App\Http\Controllers\CustomerProfileController::class, 'edit'])->name('customer.profile.edit');
+    Route::put('/customer/profile', [App\Http\Controllers\CustomerProfileController::class, 'update'])->name('customer.profile.update');
+    Route::get('/customer/profile/password', [App\Http\Controllers\CustomerProfileController::class, 'editPassword'])->name('customer.profile.password');
+    Route::put('/customer/profile/password', [App\Http\Controllers\CustomerProfileController::class, 'updatePassword'])->name('customer.profile.password.update');
 });
 
 // Admin Routes
