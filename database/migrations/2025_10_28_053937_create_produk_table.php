@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('produk', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('kategori_produk_id')->constrained('kategori_produk')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('kategori_produk_id')->constrained('kategori_produk')->onDelete('cascade');
             $table->string('nama_produk');
             $table->text('deskripsi');
             $table->decimal('harga', 10, 2);

@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('laporan', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('pesanan_id')->constrained('pesanan')->onDelete('cascade');
-            $table->foreignId('customer_id')->constrained('users')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('pesanan_id')->constrained('pesanan')->onDelete('cascade');
+            $table->foreignUuid('customer_id')->constrained('users')->onDelete('cascade');
             $table->enum('jenis_laporan', ['komplain', 'saran', 'review']);
             $table->string('judul_laporan');
             $table->text('isi_laporan');
@@ -26,7 +26,7 @@ return new class extends Migration
                 'ditutup'
             ])->default('baru');
             $table->text('tanggapan_admin')->nullable();
-            $table->foreignId('admin_penanganan_id')->nullable()->constrained('users');
+            $table->foreignUuid('admin_penanganan_id')->nullable()->constrained('users');
             $table->datetime('tanggal_tanggapan')->nullable();
             $table->timestamps();
         });

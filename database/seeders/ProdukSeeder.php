@@ -12,10 +12,15 @@ class ProdukSeeder extends Seeder
      */
     public function run(): void
     {
+        // Get kategori IDs
+        $nasiBox = \App\Models\KategoriProduk::where('nama_kategori', 'Nasi Box')->first();
+        $cateringPremium = \App\Models\KategoriProduk::where('nama_kategori', 'Catering Premium')->first();
+        $snackBox = \App\Models\KategoriProduk::where('nama_kategori', 'Snack Box')->first();
+        
         $produks = [
             // Nasi Box
             [
-                'kategori_produk_id' => 1,
+                'kategori_produk_id' => $nasiBox->id,
                 'nama_produk' => 'Nasi Box Ayam Geprek',
                 'deskripsi' => 'Nasi putih dengan ayam geprek pedas, lalapan, dan sambal',
                 'harga' => 15000,
@@ -27,7 +32,7 @@ class ProdukSeeder extends Seeder
                 'aktif' => true,
             ],
             [
-                'kategori_produk_id' => 1,
+                'kategori_produk_id' => $nasiBox->id,
                 'nama_produk' => 'Nasi Box Ayam Teriyaki',
                 'deskripsi' => 'Nasi putih dengan ayam teriyaki, sayuran, dan sup',
                 'harga' => 18000,
@@ -41,7 +46,7 @@ class ProdukSeeder extends Seeder
             
             // Catering Premium
             [
-                'kategori_produk_id' => 2,
+                'kategori_produk_id' => $cateringPremium->id,
                 'nama_produk' => 'Paket Catering Premium A',
                 'deskripsi' => 'Paket lengkap dengan nasi, ayam bakar, sayur asem, kerupuk',
                 'harga' => 25000,
@@ -53,7 +58,7 @@ class ProdukSeeder extends Seeder
                 'aktif' => true,
             ],
             [
-                'kategori_produk_id' => 2,
+                'kategori_produk_id' => $cateringPremium->id,
                 'nama_produk' => 'Paket Catering Premium B',
                 'deskripsi' => 'Paket dengan ikan bakar, nasi, gado-gado, keripik',
                 'harga' => 28000,
@@ -67,7 +72,7 @@ class ProdukSeeder extends Seeder
             
             // Snack Box
             [
-                'kategori_produk_id' => 3,
+                'kategori_produk_id' => $snackBox->id,
                 'nama_produk' => 'Snack Box Deluxe',
                 'deskripsi' => 'Snack box berisi roti, kue, buah, dan minuman',
                 'harga' => 12000,
@@ -79,7 +84,7 @@ class ProdukSeeder extends Seeder
                 'aktif' => true,
             ],
             [
-                'kategori_produk_id' => 3,
+                'kategori_produk_id' => $snackBox->id,
                 'nama_produk' => 'Snack Box Standard',
                 'deskripsi' => 'Snack box ekonomis dengan roti dan kue',
                 'harga' => 8000,

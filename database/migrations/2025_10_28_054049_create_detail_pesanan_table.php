@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('detail_pesanan', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('pesanan_id')->constrained('pesanan')->onDelete('cascade');
-            $table->foreignId('produk_id')->constrained('produk')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('pesanan_id')->constrained('pesanan')->onDelete('cascade');
+            $table->foreignUuid('produk_id')->constrained('produk')->onDelete('cascade');
             $table->string('nama_produk'); // snapshot nama produk saat dipesan
             $table->decimal('harga_satuan', 10, 2); // snapshot harga saat dipesan
             $table->integer('jumlah');

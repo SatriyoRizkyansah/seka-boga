@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengiriman', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('pesanan_id')->constrained('pesanan')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('pesanan_id')->constrained('pesanan')->onDelete('cascade');
             $table->string('nama_jasa_pengiriman')->nullable(); // JNE, JNT, SiCepat, dll
             $table->string('nomor_resi')->nullable();
             $table->enum('status_pengiriman', [

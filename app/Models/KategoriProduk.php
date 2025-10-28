@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\HasUuidPrimaryKey;
 
 class KategoriProduk extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuidPrimaryKey;
 
     protected $table = 'kategori_produk';
 

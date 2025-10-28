@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pesanan', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('kode_pesanan', 20)->unique();
-            $table->foreignId('customer_id')->constrained('users')->onDelete('cascade');
+            $table->foreignUuid('customer_id')->constrained('users')->onDelete('cascade');
             $table->enum('status_pesanan', [
                 'menunggu_pembayaran', 
                 'menunggu_konfirmasi_pembayaran', 

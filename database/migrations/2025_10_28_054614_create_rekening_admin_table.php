@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rekening_admin', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_bank'); // BCA, BRI, Mandiri, dll
+            $table->uuid('id')->primary();
+            $table->string('nama_bank');
             $table->string('nomor_rekening');
             $table->string('nama_pemilik_rekening');
-            $table->string('jenis_rekening')->default('utama'); // utama, cadangan
+            $table->enum('jenis_rekening', ['utama', 'alternatif'])->default('alternatif');
             $table->boolean('aktif')->default(true);
             $table->text('catatan')->nullable();
             $table->timestamps();

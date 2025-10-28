@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('gambar_produk', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('produk_id')->constrained('produk')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('produk_id')->constrained('produk')->onDelete('cascade');
             $table->string('nama_file');
             $table->string('path_gambar');
             $table->boolean('gambar_utama')->default(false);
-            $table->integer('urutan')->default(0);
+            $table->integer('urutan')->default(1);
             $table->timestamps();
         });
     }

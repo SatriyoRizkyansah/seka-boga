@@ -25,9 +25,9 @@ class RekeningAdminSeeder extends Seeder
                 'nama_bank' => 'Mandiri',
                 'nomor_rekening' => '0987654321',
                 'nama_pemilik_rekening' => 'Seka Boga Catering',
-                'jenis_rekening' => 'cadangan',
+                'jenis_rekening' => 'alternatif',
                 'aktif' => true,
-                'catatan' => 'Rekening cadangan untuk pembayaran',
+                'catatan' => 'Rekening alternatif untuk pembayaran',
             ],
         ];
 

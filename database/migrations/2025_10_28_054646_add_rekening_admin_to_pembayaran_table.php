@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pembayaran', function (Blueprint $table) {
-            $table->foreignId('rekening_admin_id')->nullable()->after('pesanan_id')->constrained('rekening_admin');
+            $table->foreignUuid('rekening_admin_id')->nullable()->after('pesanan_id')->constrained('rekening_admin')->onDelete('restrict');
         });
     }
 
