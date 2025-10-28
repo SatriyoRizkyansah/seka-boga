@@ -33,6 +33,26 @@ Route::middleware('auth')->group(function () {
     Route::get('/cart', [App\Http\Controllers\CustomerController::class, 'cart'])->name('customer.cart');
     Route::patch('/cart/update', [App\Http\Controllers\CustomerController::class, 'updateCart'])->name('customer.cart.update');
     Route::delete('/cart/remove', [App\Http\Controllers\CustomerController::class, 'removeFromCart'])->name('customer.cart.remove');
+    
+    // Checkout Routes
+    Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])->name('customer.checkout');
+    Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'store'])->name('customer.checkout.store');
+    
+    // Payment Routes
+    Route::get('/payment/{pesanan}/upload', [App\Http\Controllers\PaymentController::class, 'uploadForm'])->name('customer.payment.upload');
+    Route::post('/payment/{pesanan}/upload', [App\Http\Controllers\PaymentController::class, 'upload'])->name('customer.payment.store');
+    
+    // Orders Routes
+    Route::get('/orders', [App\Http\Controllers\OrderController::class, 'index'])->name('customer.orders.index');
+    Route::get('/orders/{pesanan}', [App\Http\Controllers\OrderController::class, 'show'])->name('customer.orders.show');
+    Route::patch('/orders/{pesanan}/cancel', [App\Http\Controllers\OrderController::class, 'cancel'])->name('customer.orders.cancel');
+    
+    // Profile Routes
+    Route::get('/profile', [App\Http\Controllers\CustomerProfileController::class, 'show'])->name('customer.profile.show');
+    Route::get('/profile/edit', [App\Http\Controllers\CustomerProfileController::class, 'edit'])->name('customer.profile.edit');
+    Route::put('/profile', [App\Http\Controllers\CustomerProfileController::class, 'update'])->name('customer.profile.update');
+    Route::get('/profile/password', [App\Http\Controllers\CustomerProfileController::class, 'editPassword'])->name('customer.profile.password');
+    Route::put('/profile/password', [App\Http\Controllers\CustomerProfileController::class, 'updatePassword'])->name('customer.profile.password.update');
 });
 
 // Admin Routes

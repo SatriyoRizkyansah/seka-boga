@@ -145,13 +145,13 @@
 
                         <!-- Action Buttons -->
                         <div class="space-y-4">
-                            <button onclick="proceedToCheckout()" 
-                                    class="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-300 flex items-center justify-center gap-2">
+                            <a href="{{ route('customer.checkout') }}" 
+                               class="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-300 flex items-center justify-center gap-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                                 </svg>
                                 Lanjut ke Pembayaran
-                            </button>
+                            </a>
                             
                             <a href="{{ route('customer.home') }}" 
                                class="w-full border-2 border-green-600 text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-600 hover:text-white transition-colors duration-300 flex items-center justify-center gap-2">

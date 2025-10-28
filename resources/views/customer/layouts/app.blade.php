@@ -290,7 +290,17 @@
                     </div>
                 </a>
 
-                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-green-50 transition-colors">
+                <a href="{{ route('customer.orders.index') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-green-50 transition-colors">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-shopping-bag text-blue-600"></i>
+                    </div>
+                    <div>
+                        <div class="font-medium text-gray-900">Pesanan Saya</div>
+                        <div class="text-sm text-gray-500">Riwayat & status</div>
+                    </div>
+                </a>
+
+                <a href="{{ route('customer.profile.show') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-green-50 transition-colors">
                     <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-user text-yellow-600"></i>
                     </div>
@@ -306,7 +316,7 @@
                 <h4 class="font-semibold text-gray-900 mb-3">Kategori</h4>
                 <div class="space-y-2">
                     @php
-                        $sidebarCategories = \App\Models\Kategori::where('aktif', true)->take(5)->get();
+                        $sidebarCategories = \App\Models\KategoriProduk::where('aktif', true)->get();
                     @endphp
                     @foreach($sidebarCategories as $category)
                         <a href="{{ route('customer.category', $category->id) }}" 

@@ -70,6 +70,8 @@ class Pesanan extends Model
         return $this->hasMany(Laporan::class);
     }
 
+
+
     // Helper methods
     public function formatTotalHargaProduk()
     {
