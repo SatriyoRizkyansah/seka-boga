@@ -13,9 +13,9 @@ class ProdukSeeder extends Seeder
     public function run(): void
     {
         // Get kategori IDs
-        $nasiBox = \App\Models\KategoriProduk::where('nama_kategori', 'Nasi Box')->first();
-        $cateringPremium = \App\Models\KategoriProduk::where('nama_kategori', 'Catering Premium')->first();
-        $snackBox = \App\Models\KategoriProduk::where('nama_kategori', 'Snack Box')->first();
+        $nasiBox = \App\Models\Kategori::where('nama_kategori', 'Nasi Box')->first();
+        $cateringPremium = \App\Models\Kategori::where('nama_kategori', 'Catering Premium')->first();
+        $snackBox = \App\Models\Kategori::where('nama_kategori', 'Snack Box')->first();
         
         $produks = [
             // Nasi Box

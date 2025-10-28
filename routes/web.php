@@ -22,6 +22,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Customer Routes (Public)
+Route::get('/', [App\Http\Controllers\CustomerController::class, 'index'])->name('customer.home');
+Route::get('/kategori/{category}', [App\Http\Controllers\CustomerController::class, 'category'])->name('customer.category');
+Route::get('/produk/{product}', [App\Http\Controllers\CustomerController::class, 'product'])->name('customer.product');
+
+// Customer Cart Routes (Authenticated)
+Route::middleware('auth')->group(function () {
+    Route::post('/cart/add/{product}', [App\Http\Controllers\CustomerController::class, 'addToCart'])->name('customer.cart.add');
+    Route::get('/cart', [App\Http\Controllers\CustomerController::class, 'cart'])->name('customer.cart');
+    Route::patch('/cart/update', [App\Http\Controllers\CustomerController::class, 'updateCart'])->name('customer.cart.update');
+    Route::delete('/cart/remove', [App\Http\Controllers\CustomerController::class, 'removeFromCart'])->name('customer.cart.remove');
+});
+
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard Admin

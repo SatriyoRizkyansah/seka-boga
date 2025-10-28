@@ -35,17 +35,7 @@ class Produk extends Model
     // Relationships
     public function kategori()
     {
-        return $this->belongsTo(KategoriProduk::class, 'kategori_produk_id');
-    }
-
-    public function kategoriProduk()
-    {
-        return $this->belongsTo(KategoriProduk::class);
-    }
-
-    public function gambar()
-    {
-        return $this->hasMany(GambarProduk::class);
+        return $this->belongsTo(Kategori::class, 'kategori_produk_id');
     }
 
     public function gambarProduk()

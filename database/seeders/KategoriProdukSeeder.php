@@ -41,7 +41,7 @@ class KategoriProdukSeeder extends Seeder
         ];
 
         foreach ($kategoris as $kategori) {
-            \App\Models\KategoriProduk::create($kategori);
+            \App\Models\Kategori::create($kategori);
         }
     }
 }
