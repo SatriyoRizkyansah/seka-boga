@@ -15,11 +15,39 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create Admin User
+        User::create([
+            'name' => 'Admin Seka Boga',
+            'email' => 'admin@sekaboga.com',
+            'password' => bcrypt('admin123'),
+            'role' => 'admin',
+            'nomor_telepon' => '081234567890',
+            'alamat_lengkap' => 'Jl. Admin No. 1, Jakarta',
+            'kota' => 'Jakarta',
+            'provinsi' => 'DKI Jakarta',
+            'kode_pos' => '12345',
+            'aktif' => true,
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Create Sample Customer
+        User::create([
+            'name' => 'Customer Test',
+            'email' => 'customer@example.com',
+            'password' => bcrypt('customer123'),
+            'role' => 'customer',
+            'nomor_telepon' => '081234567891',
+            'alamat_lengkap' => 'Jl. Customer No. 2, Jakarta',
+            'kota' => 'Jakarta',
+            'provinsi' => 'DKI Jakarta',
+            'kode_pos' => '12346',
+            'aktif' => true,
+        ]);
+
+        // Call other seeders
+        $this->call([
+            RekeningAdminSeeder::class,
+            KategoriProdukSeeder::class,
+            ProdukSeeder::class,
         ]);
     }
 }
