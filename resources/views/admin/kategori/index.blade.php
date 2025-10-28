@@ -14,7 +14,7 @@
 @section('content')
 <div class="bg-white overflow-hidden shadow rounded-lg">
     <div class="px-4 py-5 sm:p-6">
-        @if($kategoris->count() > 0)
+        @if($kategori->count() > 0)
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -27,28 +27,28 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($kategoris as $kategori)
+                        @foreach($kategori as $item)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    @if($kategori->gambar_kategori)
-                                        <img class="h-10 w-10 rounded-lg mr-3 object-cover" src="{{ Storage::url($kategori->gambar_kategori) }}" alt="{{ $kategori->nama_kategori }}">
+                                    @if($item->gambar_kategori)
+                                        <img class="h-10 w-10 rounded-lg mr-3 object-cover" src="{{ Storage::url($item->gambar_kategori) }}" alt="{{ $item->nama_kategori }}">
                                     @else
                                         <div class="h-10 w-10 rounded-lg mr-3 bg-gray-200 flex items-center justify-center">
                                             <span class="text-gray-500 text-xs">No Img</span>
                                         </div>
                                     @endif
-                                    <div class="text-sm font-medium text-gray-900">{{ $kategori->nama_kategori }}</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $item->nama_kategori }}</div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900">{{ Str::limit($kategori->deskripsi, 50) }}</div>
+                                <div class="text-sm text-gray-900">{{ Str::limit($item->deskripsi, 50) }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $kategori->produk_count ?? $kategori->produk->count() }}
+                                {{ $item->produk_count ?? 0 }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if($kategori->aktif)
+                                @if($item->aktif)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                         Aktif
                                     </span>
@@ -60,9 +60,9 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-2">
-                                    <a href="{{ route('admin.kategori.show', $kategori) }}" class="text-green-600 hover:text-green-900">Lihat</a>
-                                    <a href="{{ route('admin.kategori.edit', $kategori) }}" class="text-blue-600 hover:text-blue-900">Edit</a>
-                                    <form action="{{ route('admin.kategori.destroy', $kategori) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">
+                                    <a href="{{ route('admin.kategori.show', $item) }}" class="text-green-600 hover:text-green-900">Lihat</a>
+                                    <a href="{{ route('admin.kategori.edit', $item) }}" class="text-blue-600 hover:text-blue-900">Edit</a>
+                                    <form action="{{ route('admin.kategori.destroy', $item) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
@@ -77,7 +77,7 @@
 
             <!-- Pagination -->
             <div class="mt-6">
-                {{ $kategoris->links() }}
+                {{ $kategori->links() }}
             </div>
         @else
             <div class="text-center py-8">
