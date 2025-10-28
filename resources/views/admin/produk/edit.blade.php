@@ -42,13 +42,13 @@
                     <label for="kategori_id" class="block text-sm font-medium text-gray-700 mb-2">
                         Kategori <span class="text-red-500">*</span>
                     </label>
-                    <select name="kategori_produk_id" 
+                    <select name="kategori_id" 
                             id="kategori_id" 
-                            class="input-field @error('kategori_produk_id') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
+                            class="input-field @error('kategori_id') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
                             required>
                         <option value="">Pilih Kategori</option>
                         @foreach($kategori as $kat)
-                            <option value="{{ $kat->id }}" {{ old('kategori_produk_id', $produk->kategori_produk_id) == $kat->id ? 'selected' : '' }}>
+                            <option value="{{ $kat->id }}" {{ old('kategori_id', $produk->kategori_produk_id) == $kat->id ? 'selected' : '' }}>
                                 {{ $kat->nama_kategori }}
                             </option>
                         @endforeach

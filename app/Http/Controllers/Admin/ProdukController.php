@@ -60,7 +60,7 @@ class ProdukController extends Controller
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
             'aktif' => 'boolean',
-            'gambar' => 'required|array|min:1',
+            'gambar' => 'nullable|array',
             'gambar.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
@@ -124,6 +124,7 @@ class ProdukController extends Controller
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
             'aktif' => 'boolean',
+            'gambar' => 'nullable|array',
             'gambar.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
