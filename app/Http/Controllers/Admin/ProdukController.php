@@ -54,22 +54,23 @@ class ProdukController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kategori_produk_id' => 'required|exists:kategori_produk,id',
+            'kategori_id' => 'required|exists:kategori_produk,id',
             'nama_produk' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
+            'deskripsi' => 'nullable|string',
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
-            'minimal_pemesanan' => 'required|integer|min:1',
-            'satuan' => 'required|string|max:50',
-            'bahan_utama' => 'nullable|string',
-            'catatan_khusus' => 'nullable|string',
-            'tersedia' => 'boolean',
             'aktif' => 'boolean',
+            'gambar' => 'required|array|min:1',
             'gambar.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $data = $request->all();
-        $data['tersedia'] = $request->has('tersedia');
+        $data = $request->only([
+            'nama_produk', 
+            'deskripsi',
+            'harga',
+            'stok'
+        ]);
+        $data['kategori_produk_id'] = $request->kategori_id; // Map kategori_id to kategori_produk_id
         $data['aktif'] = $request->has('aktif');
 
         $produk = Produk::create($data);
@@ -97,7 +98,7 @@ class ProdukController extends Controller
      */
     public function show(Produk $produk)
     {
-        $produk->load('kategoriProduk', 'gambarProduk');
+        $produk->load(['kategori', 'gambar', 'detailPesanan']);
         return view('admin.produk.show', compact('produk'));
     }
 
@@ -106,9 +107,9 @@ class ProdukController extends Controller
      */
     public function edit(Produk $produk)
     {
-        $kategoris = KategoriProduk::where('aktif', true)->get();
-        $produk->load('gambarProduk');
-        return view('admin.produk.edit', compact('produk', 'kategoris'));
+        $kategori = KategoriProduk::where('aktif', true)->get();
+        $produk->load('gambar');
+        return view('admin.produk.edit', compact('produk', 'kategori'));
     }
 
     /**
@@ -117,36 +118,36 @@ class ProdukController extends Controller
     public function update(Request $request, Produk $produk)
     {
         $request->validate([
-            'kategori_produk_id' => 'required|exists:kategori_produk,id',
+            'kategori_id' => 'required|exists:kategori_produk,id',
             'nama_produk' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
+            'deskripsi' => 'nullable|string',
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
-            'minimal_pemesanan' => 'required|integer|min:1',
-            'satuan' => 'required|string|max:50',
-            'bahan_utama' => 'nullable|string',
-            'catatan_khusus' => 'nullable|string',
-            'tersedia' => 'boolean',
             'aktif' => 'boolean',
             'gambar.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $data = $request->all();
-        $data['tersedia'] = $request->has('tersedia');
+        $data = $request->only([
+            'nama_produk', 
+            'deskripsi',
+            'harga',
+            'stok'
+        ]);
+        $data['kategori_produk_id'] = $request->kategori_id; // Map kategori_id to kategori_produk_id
         $data['aktif'] = $request->has('aktif');
 
         $produk->update($data);
 
         // Handle new images
         if ($request->hasFile('gambar')) {
-            $maxOrder = $produk->gambarProduk()->max('urutan') ?? 0;
+            $maxOrder = $produk->gambar()->max('urutan') ?? 0;
             foreach ($request->file('gambar') as $key => $file) {
                 $path = $file->store('produk', 'public');
                 GambarProduk::create([
                     'produk_id' => $produk->id,
                     'nama_file' => $file->getClientOriginalName(),
                     'path_gambar' => $path,
-                    'gambar_utama' => false,
+                    'gambar_utama' => $maxOrder === 0 && $key === 0, // First image as main if no existing images
                     'urutan' => $maxOrder + $key + 1
                 ]);
             }
@@ -162,7 +163,7 @@ class ProdukController extends Controller
     public function destroy(Produk $produk)
     {
         // Delete all images
-        foreach ($produk->gambarProduk as $gambar) {
+        foreach ($produk->gambar as $gambar) {
             Storage::disk('public')->delete($gambar->path_gambar);
             $gambar->delete();
         }

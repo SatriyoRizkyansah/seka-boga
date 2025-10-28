@@ -50,8 +50,8 @@
                 @enderror
             </div>
 
-            <!-- Gambar Kategori Saat Ini -->
-            @if($kategori->gambar_kategori)
+            <!-- Gambar Kategori - Hidden -->
+            {{-- @if($kategori->gambar_kategori)
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     Gambar Saat Ini
@@ -82,7 +82,7 @@
                 @error('gambar_kategori')
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
-            </div>
+            </div> --}}
 
             <!-- Status Aktif -->
             <div>
