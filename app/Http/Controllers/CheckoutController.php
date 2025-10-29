@@ -10,12 +10,10 @@ use App\Models\RekeningAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
-    /**
-     * Show checkout page
-     */
     public function index()
     {
         if (!Auth::check()) {
@@ -41,33 +39,38 @@ class CheckoutController extends Controller
         return view('customer.checkout.index', compact('cartItems', 'total', 'user', 'rekeningAdmin'));
     }
 
-    /**
-     * Process checkout and create order
-     */
     public function store(Request $request)
     {
+        Log::info('=== CHECKOUT PROCESS STARTED ===');
+        Log::info('Request data: ', $request->all());
+
         if (!Auth::check()) {
+            Log::error('User not authenticated');
             return redirect()->route('login');
         }
 
+        // Validasi input
         $validated = $request->validate([
-            'nama_penerima' => ['required', 'string', 'max:255'],
-            'nomor_telepon_penerima' => ['required', 'string', 'max:20'],
-            'alamat_pengiriman' => ['required', 'string', 'max:500'],
-            'kota_pengiriman' => ['required', 'string', 'max:100'],
-            'provinsi_pengiriman' => ['required', 'string', 'max:100'],
-            'kode_pos_pengiriman' => ['required', 'string', 'max:10'],
-            'tanggal_acara' => ['required', 'date', 'after:today'],
-            'waktu_acara' => ['required', 'string'],
-            'catatan_pesanan' => ['nullable', 'string', 'max:1000'],
-
+            'nama_penerima' => 'required|string|max:255',
+            'nomor_telepon_penerima' => 'required|string|max:20',
+            'alamat_pengiriman' => 'required|string',
+            'kota_pengiriman' => 'required|string|max:255',
+            'provinsi_pengiriman' => 'required|string|max:255',
+            'kode_pos_pengiriman' => 'required|string|max:10',
+            'tanggal_acara' => 'required|date|after_or_equal:today',
+            'waktu_acara' => 'required',
+            'catatan_pesanan' => 'nullable|string',
         ]);
 
+        Log::info('Validation passed');
+
+        // Ambil item keranjang
         $cartItems = Keranjang::with('produk')
             ->where('customer_id', Auth::id())
             ->get();
 
         if ($cartItems->isEmpty()) {
+            Log::error('Cart is empty');
             return redirect()->route('customer.cart')
                            ->with('error', 'Keranjang belanja kosong');
         }
@@ -76,10 +79,11 @@ class CheckoutController extends Controller
             return $item->jumlah * $item->produk->harga;
         });
 
-        try {
-            DB::beginTransaction();
+        Log::info('Total amount calculated: ' . $totalAmount);
 
-            // Create order
+        DB::beginTransaction();
+        try {
+            // Buat pesanan
             $pesanan = Pesanan::create([
                 'customer_id' => Auth::id(),
                 'kode_pesanan' => $this->generateOrderNumber(),
@@ -87,7 +91,7 @@ class CheckoutController extends Controller
                 'tanggal_dibutuhkan' => $validated['tanggal_acara'] . ' ' . $validated['waktu_acara'],
                 'status_pesanan' => 'menunggu_pembayaran',
                 'total_harga_produk' => $totalAmount,
-                'total_keseluruhan' => $totalAmount, // For now, no shipping cost
+                'total_keseluruhan' => $totalAmount,
                 'nama_penerima' => $validated['nama_penerima'],
                 'nomor_telepon_penerima' => $validated['nomor_telepon_penerima'],
                 'alamat_pengiriman' => $validated['alamat_pengiriman'],
@@ -97,44 +101,55 @@ class CheckoutController extends Controller
                 'catatan_pesanan' => $validated['catatan_pesanan'],
             ]);
 
-            // Create order details
+            Log::info('Order created with ID: ' . $pesanan->id);
+
+            // Buat detail pesanan
             foreach ($cartItems as $item) {
                 DetailPesanan::create([
                     'pesanan_id' => $pesanan->id,
                     'produk_id' => $item->produk_id,
+                    'nama_produk' => $item->produk->nama_produk, // snapshot nama produk
                     'jumlah' => $item->jumlah,
                     'harga_satuan' => $item->produk->harga,
                     'subtotal' => $item->jumlah * $item->produk->harga,
-                    'catatan_item' => $item->catatan,
+                    'catatan_produk' => $item->catatan, // sesuai dengan migration
                 ]);
             }
 
-            // Clear cart
+            Log::info('Order details created');
+
+            // Hapus keranjang
             Keranjang::where('customer_id', Auth::id())->delete();
 
+            Log::info('Cart cleared');
+
             DB::commit();
+
+            Log::info('Transaction committed successfully');
+            Log::info('Redirecting to payment page for order: ' . $pesanan->id);
 
             return redirect()->route('customer.payment.upload', $pesanan->id)
                            ->with('success', 'Pesanan berhasil dibuat! Silakan lakukan pembayaran.');
 
         } catch (\Exception $e) {
             DB::rollback();
-            return back()->with('error', 'Terjadi kesalahan saat memproses pesanan: ' . $e->getMessage());
+            Log::error('Error creating order: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            
+            return back()->withInput()
+                        ->with('error', 'Terjadi kesalahan saat memproses pesanan: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Generate unique order number
-     */
     private function generateOrderNumber()
     {
-        $prefix = 'SB'; // Seka Boga
+        $prefix = 'SB';
         $date = date('Ymd');
         $random = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
         
         $orderNumber = $prefix . $date . $random;
         
-        // Check if order number already exists
+        // Pastikan nomor pesanan unik
         while (Pesanan::where('kode_pesanan', $orderNumber)->exists()) {
             $random = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
             $orderNumber = $prefix . $date . $random;

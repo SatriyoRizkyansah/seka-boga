@@ -11,7 +11,30 @@
             <p class="text-gray-600">Lengkapi data pesanan Anda</p>
         </div>
 
-        <form action="{{ route('customer.checkout.store') }}" method="POST" class="space-y-8">
+        <!-- Success/Error Messages -->
+        @if(session('success'))
+            <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                <ul class="list-disc list-inside">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('customer.checkout.store') }}" method="POST" id="checkoutForm">
             @csrf
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -67,7 +90,7 @@
                                 <textarea name="alamat_pengiriman" id="alamat_pengiriman" rows="3" 
                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                           placeholder="Masukkan alamat lengkap..."
-                                          required>{{ old('alamat_pengiriman', $user->alamat) }}</textarea>
+                                          required>{{ old('alamat_pengiriman', $user->alamat_lengkap) }}</textarea>
                                 @error('alamat_pengiriman')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
@@ -211,7 +234,7 @@
                         </div>
                         
                         <div class="mt-6 space-y-4">
-                            <button type="submit" 
+                            <button type="submit" id="submitBtn"
                                     class="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transform hover:scale-105 transition-all duration-200 shadow-lg">
                                 Buat Pesanan
                             </button>
@@ -227,4 +250,13 @@
         </form>
     </div>
 </div>
+
+<script>
+document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Memproses...';
+    submitBtn.classList.add('opacity-50');
+});
+</script>
 @endsection

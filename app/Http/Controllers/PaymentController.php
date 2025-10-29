@@ -46,7 +46,6 @@ class PaymentController extends Controller
         $validated = $request->validate([
             'bukti_pembayaran' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'rekening_admin_id' => ['required', 'exists:rekening_admin,id'],
-            'catatan_pembayaran' => ['nullable', 'string', 'max:500'],
         ]);
 
         // Check if payment already exists
@@ -70,7 +69,6 @@ class PaymentController extends Controller
                 'status_pembayaran' => 'menunggu_konfirmasi',
                 'metode_pembayaran' => 'Transfer Bank',
                 'bukti_pembayaran' => $path,
-                'catatan_pembayaran' => $validated['catatan_pembayaran'],
                 'tanggal_upload_bukti' => now(),
             ]);
 

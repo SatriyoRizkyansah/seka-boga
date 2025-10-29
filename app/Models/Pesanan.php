@@ -57,6 +57,11 @@ class Pesanan extends Model
 
     public function pembayaran()
     {
+        return $this->hasOne(Pembayaran::class);
+    }
+
+    public function semuaPembayaran()
+    {
         return $this->hasMany(Pembayaran::class);
     }
 

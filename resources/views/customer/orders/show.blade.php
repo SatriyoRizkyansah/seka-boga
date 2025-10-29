@@ -111,7 +111,7 @@
                 </div>
 
                 <!-- Payment Information -->
-                @if($order->pembayaran->isNotEmpty())
+                @if($order->pembayaran)
                 <div class="bg-white rounded-2xl shadow-lg p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,43 +120,37 @@
                         Informasi Pembayaran
                     </h3>
                     
-                    @foreach($order->pembayaran as $payment)
-                    <div class="border border-gray-200 rounded-lg p-4 mb-4 last:mb-0">
+                    <div class="border border-gray-200 rounded-lg p-4">
                         <div class="flex items-center justify-between mb-3">
-                            <span class="font-medium">{{ $payment->metode_pembayaran }}</span>
+                            <span class="font-medium">{{ $order->pembayaran->metode_pembayaran }}</span>
                             <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full 
-                                @if($payment->status_pembayaran === 'dikonfirmasi') bg-green-100 text-green-800
-                                @elseif($payment->status_pembayaran === 'menunggu_konfirmasi') bg-yellow-100 text-yellow-800
-                                @elseif($payment->status_pembayaran === 'ditolak') bg-red-100 text-red-800
+                                @if($order->pembayaran->status_pembayaran === 'dikonfirmasi') bg-green-100 text-green-800
+                                @elseif($order->pembayaran->status_pembayaran === 'menunggu_konfirmasi') bg-yellow-100 text-yellow-800
+                                @elseif($order->pembayaran->status_pembayaran === 'ditolak') bg-red-100 text-red-800
                                 @else bg-gray-100 text-gray-800 @endif">
-                                {{ ucfirst(str_replace('_', ' ', $payment->status_pembayaran)) }}
+                                {{ ucfirst(str_replace('_', ' ', $order->pembayaran->status_pembayaran)) }}
                             </span>
                         </div>
                         
-                        <p class="text-sm text-gray-600 mb-2">Jumlah: <span class="font-medium">Rp {{ number_format($payment->jumlah_pembayaran, 0, ',', '.') }}</span></p>
+                        <p class="text-sm text-gray-600 mb-2">Jumlah: <span class="font-medium">Rp {{ number_format($order->pembayaran->jumlah_pembayaran, 0, ',', '.') }}</span></p>
                         
-                        @if($payment->bukti_pembayaran)
+                        @if($order->pembayaran->bukti_pembayaran)
                             <div class="mb-2">
                                 <p class="text-sm text-gray-600 mb-2">Bukti Pembayaran:</p>
-                                <img src="{{ Storage::url($payment->bukti_pembayaran) }}" alt="Bukti Pembayaran" class="w-32 h-32 object-cover rounded-lg border cursor-pointer" onclick="showImageModal('{{ Storage::url($payment->bukti_pembayaran) }}')">
+                                <img src="{{ Storage::url($order->pembayaran->bukti_pembayaran) }}" alt="Bukti Pembayaran" class="w-32 h-32 object-cover rounded-lg border cursor-pointer" onclick="showImageModal('{{ Storage::url($order->pembayaran->bukti_pembayaran) }}')">
                             </div>
                         @endif
                         
-                        @if($payment->tanggal_upload_bukti)
-                            <p class="text-xs text-gray-500">Diupload: {{ $payment->tanggal_upload_bukti->format('d M Y H:i') }}</p>
+                        @if($order->pembayaran->tanggal_upload_bukti)
+                            <p class="text-xs text-gray-500">Diupload: {{ $order->pembayaran->tanggal_upload_bukti->format('d M Y H:i') }}</p>
                         @endif
                         
-                        @if($payment->catatan_pembayaran)
-                            <p class="text-sm text-gray-600 mt-2"><strong>Catatan:</strong> {{ $payment->catatan_pembayaran }}</p>
-                        @endif
-                        
-                        @if($payment->alasan_penolakan)
+                        @if($order->pembayaran->alasan_penolakan)
                             <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded">
-                                <p class="text-sm text-red-700"><strong>Alasan Penolakan:</strong> {{ $payment->alasan_penolakan }}</p>
+                                <p class="text-sm text-red-700"><strong>Alasan Penolakan:</strong> {{ $order->pembayaran->alasan_penolakan }}</p>
                             </div>
                         @endif
                     </div>
-                    @endforeach
                 </div>
                 @endif
             </div>

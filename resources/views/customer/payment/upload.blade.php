@@ -33,16 +33,10 @@
                                 <input type="radio" name="rekening_admin_id" value="{{ $rekening->id }}" 
                                        class="mt-1 text-green-600 focus:ring-green-500 border-gray-300" required>
                                 <div class="ml-3 flex-1">
-                                    <div class="flex items-center gap-3">
-                                        <img src="{{ asset('images/banks/' . strtolower($rekening->nama_bank) . '.png') }}" 
-                                             alt="{{ $rekening->nama_bank }}" 
-                                             class="w-8 h-8 object-contain"
-                                             onerror="this.src='{{ asset('images/banks/default.png') }}'">
-                                        <div>
-                                            <p class="font-medium text-gray-900">{{ $rekening->nama_bank }}</p>
-                                            <p class="text-sm text-gray-600">{{ $rekening->nomor_rekening }}</p>
-                                            <p class="text-sm text-gray-600">a.n. {{ $rekening->nama_pemilik }}</p>
-                                        </div>
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ $rekening->nama_bank }}</p>
+                                        <p class="text-sm text-gray-600">{{ $rekening->nomor_rekening }}</p>
+                                        <p class="text-sm text-gray-600">a.n. {{ $rekening->nama_pemilik }}</p>
                                     </div>
                                 </div>
                             </label>
@@ -74,19 +68,6 @@
                             </div>
                         </div>
                         @error('bukti_pembayaran')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Catatan -->
-                    <div>
-                        <label for="catatan_pembayaran" class="block text-sm font-medium text-gray-700 mb-2">
-                            Catatan (Opsional)
-                        </label>
-                        <textarea name="catatan_pembayaran" id="catatan_pembayaran" rows="3" 
-                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                                  placeholder="Catatan tambahan untuk pembayaran...">{{ old('catatan_pembayaran') }}</textarea>
-                        @error('catatan_pembayaran')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>

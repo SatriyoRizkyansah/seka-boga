@@ -34,7 +34,7 @@ class OrderController extends Controller
             return redirect()->route('login');
         }
 
-        $order = Pesanan::with(['detailPesanan.produk.gambarUtama', 'rekeningAdmin'])
+        $order = Pesanan::with(['detailPesanan.produk.gambarUtama', 'pembayaran.rekeningAdmin'])
             ->where('id', $id)
             ->where('customer_id', Auth::id())
             ->firstOrFail();

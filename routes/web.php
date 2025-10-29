@@ -27,6 +27,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])->name('customer.checkout');
     Route::post('/checkout', [App\Http\Controllers\CheckoutController::class, 'store'])->name('customer.checkout.store');
     
+    // Test Route untuk debugging
+    Route::get('/checkout-test', function() {
+        $user = Auth::user();
+        $cartItems = \App\Models\KeranjangBelanja::where('id_customer', $user->id)->with('produk')->get();
+        $total = $cartItems->sum(function($item) {
+            return $item->produk->harga * $item->jumlah;
+        });
+        return view('customer.checkout.test', compact('user', 'cartItems', 'total'));
+    })->name('checkout.test');
+    
     // Payment Routes
     Route::get('/payment/{pesanan}/upload', [App\Http\Controllers\PaymentController::class, 'uploadForm'])->name('customer.payment.upload');
     Route::post('/payment/{pesanan}/upload', [App\Http\Controllers\PaymentController::class, 'upload'])->name('customer.payment.store');
@@ -59,6 +69,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Rekening Admin
     Route::resource('rekening', App\Http\Controllers\Admin\RekeningAdminController::class);
+    
+    // Pesanan
+    Route::get('pesanan', [App\Http\Controllers\Admin\AdminPesananController::class, 'index'])->name('pesanan.index');
+    Route::get('pesanan/{pesanan}', [App\Http\Controllers\Admin\AdminPesananController::class, 'show'])->name('pesanan.show');
+    Route::patch('pesanan/{pesanan}/status', [App\Http\Controllers\Admin\AdminPesananController::class, 'updateStatus'])->name('pesanan.update-status');
+    Route::patch('pesanan/{pesanan}/payment', [App\Http\Controllers\Admin\AdminPesananController::class, 'confirmPayment'])->name('pesanan.confirm-payment');
 });
 
 require __DIR__.'/auth.php';
