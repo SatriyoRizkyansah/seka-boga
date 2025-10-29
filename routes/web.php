@@ -38,13 +38,14 @@ Route::middleware('auth')->group(function () {
     })->name('checkout.test');
     
     // Payment Routes
-    Route::get('/payment/{pesanan}/upload', [App\Http\Controllers\PaymentController::class, 'uploadForm'])->name('customer.payment.upload');
-    Route::post('/payment/{pesanan}/upload', [App\Http\Controllers\PaymentController::class, 'upload'])->name('customer.payment.store');
+    Route::get('/payment/{pesanan}/upload/{type?}', [App\Http\Controllers\PaymentController::class, 'uploadForm'])->name('customer.payment.upload');
+    Route::post('/payment/{pesanan}/upload/{type?}', [App\Http\Controllers\PaymentController::class, 'upload'])->name('customer.payment.store');
     
     // Orders Routes
     Route::get('/orders', [App\Http\Controllers\OrderController::class, 'index'])->name('customer.orders.index');
     Route::get('/orders/{pesanan}', [App\Http\Controllers\OrderController::class, 'show'])->name('customer.orders.show');
     Route::patch('/orders/{pesanan}/cancel', [App\Http\Controllers\OrderController::class, 'cancel'])->name('customer.orders.cancel');
+    Route::patch('/orders/{pesanan}/complete', [App\Http\Controllers\OrderController::class, 'complete'])->name('customer.orders.complete');
     
     // Customer Profile Routes
     Route::get('/customer/profile', [App\Http\Controllers\CustomerProfileController::class, 'show'])->name('customer.profile.show');
@@ -75,6 +76,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('pesanan/{pesanan}', [App\Http\Controllers\Admin\AdminPesananController::class, 'show'])->name('pesanan.show');
     Route::patch('pesanan/{pesanan}/status', [App\Http\Controllers\Admin\AdminPesananController::class, 'updateStatus'])->name('pesanan.update-status');
     Route::patch('pesanan/{pesanan}/payment', [App\Http\Controllers\Admin\AdminPesananController::class, 'confirmPayment'])->name('pesanan.confirm-payment');
+    Route::patch('pesanan/{pesanan}/shipping-cost', [App\Http\Controllers\Admin\AdminPesananController::class, 'inputShippingCost'])->name('pesanan.input-shipping-cost');
+    Route::patch('pesanan/{pesanan}/tracking', [App\Http\Controllers\Admin\AdminPesananController::class, 'inputTrackingNumber'])->name('pesanan.input-tracking');
 });
 
 require __DIR__.'/auth.php';

@@ -188,14 +188,37 @@
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Aksi</h3>
                     
                     <div class="space-y-3">
-                        @if($order->status_pesanan === 'menunggu_pembayaran' && !$order->pembayaran->where('status_pembayaran', '!=', 'ditolak')->first())
-                            <a href="{{ route('customer.payment.upload', $order->id) }}" 
+                        <!-- Upload Pembayaran Produk -->
+                        @if($order->status_pesanan === 'menunggu_pembayaran_produk')
+                            <a href="{{ route('customer.payment.upload', [$order->id, 'produk']) }}" 
                                class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-200 shadow-lg text-center block">
-                                Upload Pembayaran
+                                Upload Pembayaran Produk
                             </a>
                         @endif
                         
-                        @if($order->status_pesanan === 'menunggu_pembayaran')
+                        <!-- Upload Pembayaran Ongkir -->
+                        @if($order->status_pesanan === 'menunggu_pembayaran_ongkir')
+                            <a href="{{ route('customer.payment.upload', [$order->id, 'ongkir']) }}" 
+                               class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transform hover:scale-105 transition-all duration-200 shadow-lg text-center block">
+                                Upload Pembayaran Ongkir
+                            </a>
+                        @endif
+                        
+                        <!-- Tombol Selesaikan Pesanan -->
+                        @if($order->status_pesanan === 'dikirim')
+                            <form action="{{ route('customer.orders.complete', $order->id) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" 
+                                        onclick="return confirm('Apakah Anda sudah menerima pesanan ini?')"
+                                        class="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transform hover:scale-105 transition-all duration-200 shadow-lg">
+                                    Selesaikan Pesanan
+                                </button>
+                            </form>
+                        @endif
+                        
+                        <!-- Batalkan Pesanan -->
+                        @if(in_array($order->status_pesanan, ['menunggu_pembayaran_produk', 'menunggu_konfirmasi_pembayaran_produk']))
                             <form action="{{ route('customer.orders.cancel', $order->id) }}" method="POST">
                                 @csrf
                                 @method('PATCH')

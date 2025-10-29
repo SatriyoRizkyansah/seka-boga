@@ -7,7 +7,7 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Upload Bukti Pembayaran</h1>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Upload Bukti Pembayaran {{ $type == 'produk' ? 'Produk' : 'Ongkir' }}</h1>
             <p class="text-gray-600">Pesanan #{{ $pesanan->kode_pesanan }}</p>
         </div>
 
@@ -18,10 +18,10 @@
                     <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                     </svg>
-                    Upload Bukti Pembayaran
+                    Upload Bukti Pembayaran {{ $type == 'produk' ? 'Produk' : 'Ongkir' }}
                 </h3>
 
-                <form action="{{ route('customer.payment.store', $pesanan->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <form action="{{ route('customer.payment.store', [$pesanan->id, $type]) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
 
                     <!-- Pilih Rekening Admin -->
@@ -76,7 +76,7 @@
                     <div class="flex space-x-4">
                         <button type="submit" 
                                 class="flex-1 bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transform hover:scale-105 transition-all duration-200 shadow-lg">
-                            Upload Bukti Pembayaran
+                            Upload Bukti Pembayaran {{ $type == 'produk' ? 'Produk' : 'Ongkir' }}
                         </button>
                         
                         <a href="{{ route('customer.orders.show', $pesanan->id) }}" 
@@ -109,8 +109,8 @@
                             </span>
                         </div>
                         <div class="flex justify-between border-t pt-3 text-lg font-bold">
-                            <span>Total Pembayaran:</span>
-                            <span class="text-green-600">Rp {{ number_format($pesanan->total_keseluruhan ?: $pesanan->total_harga_produk, 0, ',', '.') }}</span>
+                            <span>Total Pembayaran {{ $type == 'produk' ? 'Produk' : 'Ongkir' }}:</span>
+                            <span class="text-green-600">Rp {{ number_format($amount, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>

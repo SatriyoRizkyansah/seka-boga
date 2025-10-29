@@ -89,7 +89,7 @@ class CheckoutController extends Controller
                 'kode_pesanan' => $this->generateOrderNumber(),
                 'tanggal_pesanan' => now(),
                 'tanggal_dibutuhkan' => $validated['tanggal_acara'] . ' ' . $validated['waktu_acara'],
-                'status_pesanan' => 'menunggu_pembayaran',
+                'status_pesanan' => 'menunggu_pembayaran_produk',
                 'total_harga_produk' => $totalAmount,
                 'total_keseluruhan' => $totalAmount,
                 'nama_penerima' => $validated['nama_penerima'],

@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pesanan', function (Blueprint $table) {
-            // Fields already exist, skip this migration
+            // Only add fields we actually need
+            $table->string('nama_jasa_pengiriman')->nullable()->after('total_keseluruhan');
+            $table->string('nomor_resi')->nullable()->after('nama_jasa_pengiriman');
         });
     }
 
@@ -22,7 +24,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('pesanan', function (Blueprint $table) {
-            // Nothing to rollback
+            $table->dropColumn([
+                'nama_jasa_pengiriman',
+                'nomor_resi'
+            ]);
         });
     }
 };

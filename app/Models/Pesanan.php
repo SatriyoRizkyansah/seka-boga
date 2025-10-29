@@ -29,6 +29,8 @@ class Pesanan extends Model
         'catatan_pesanan',
         'tanggal_pesanan',
         'tanggal_dibutuhkan',
+        'nama_jasa_pengiriman',
+        'nomor_resi',
     ];
 
     protected $casts = [
@@ -108,5 +110,65 @@ class Pesanan extends Model
         $sequence = $lastOrder ? (int)substr($lastOrder->kode_pesanan, -3) + 1 : 1;
         
         return 'ORD-' . $today . '-' . str_pad($sequence, 3, '0', STR_PAD_LEFT);
+    }
+
+    // Helper methods untuk alur pesanan baru
+    public function getPembayaranProduk()
+    {
+        return $this->semuaPembayaran()->where('jenis_pembayaran', 'produk')->first();
+    }
+
+    public function getPembayaranOngkir()
+    {
+        // Get the most recent ongkir payment, prioritizing ones with bukti_pembayaran
+        return $this->semuaPembayaran()
+                   ->where('jenis_pembayaran', 'ongkir')
+                   ->orderByRaw('bukti_pembayaran IS NOT NULL DESC, created_at DESC')
+                   ->first();
+    }
+
+    public function needsProductPayment()
+    {
+        return in_array($this->status_pesanan, ['menunggu_pembayaran_produk']);
+    }
+
+    public function needsProductPaymentConfirmation()
+    {
+        return in_array($this->status_pesanan, ['menunggu_konfirmasi_pembayaran_produk']);
+    }
+
+    public function needsShippingCostInput()
+    {
+        return in_array($this->status_pesanan, ['menunggu_input_ongkir']);
+    }
+
+    public function needsShippingPayment()
+    {
+        return in_array($this->status_pesanan, ['menunggu_pembayaran_ongkir']);
+    }
+
+    public function needsShippingPaymentConfirmation()
+    {
+        return in_array($this->status_pesanan, ['menunggu_konfirmasi_pembayaran_ongkir']);
+    }
+
+    public function needsTrackingInput()
+    {
+        return in_array($this->status_pesanan, ['menunggu_input_resi']);
+    }
+
+    public function isShipped()
+    {
+        return in_array($this->status_pesanan, ['dikirim']);
+    }
+
+    public function isCompleted()
+    {
+        return in_array($this->status_pesanan, ['selesai']);
+    }
+
+    public function isCancelled()
+    {
+        return in_array($this->status_pesanan, ['dibatalkan']);
     }
 }
