@@ -115,12 +115,14 @@ class AdminPesananController extends Controller
             'admin_konfirmasi_id' => Auth::id()
         ]);
         
-        // Update status pesanan berdasarkan jenis pembayaran
+        // Update status pesanan berdasarkan jenis pembayaran dengan alur otomatis
         if ($validated['status'] == 'dikonfirmasi') {
             if ($validated['jenis_pembayaran'] == 'produk') {
-                $pesanan->update(['status_pesanan' => 'pembayaran_produk_dikonfirmasi']);
+                // Setelah pembayaran produk dikonfirmasi, langsung ke input ongkir
+                $pesanan->update(['status_pesanan' => 'menunggu_input_ongkir']);
             } elseif ($validated['jenis_pembayaran'] == 'ongkir') {
-                $pesanan->update(['status_pesanan' => 'pembayaran_ongkir_dikonfirmasi']);
+                // Setelah pembayaran ongkir dikonfirmasi, langsung ke menunggu input resi
+                $pesanan->update(['status_pesanan' => 'menunggu_input_resi']);
             }
         } else {
             // Jika ditolak, kembali ke status menunggu pembayaran

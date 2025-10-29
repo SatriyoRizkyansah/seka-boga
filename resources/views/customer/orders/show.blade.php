@@ -107,6 +107,38 @@
                             <p class="font-medium">{{ $order->catatan_pesanan }}</p>
                         </div>
                         @endif
+                        
+                        <!-- Informasi Resi -->
+                        @if($order->nomor_resi && $order->nama_jasa_pengiriman && in_array($order->status_pesanan, ['dikirim', 'selesai']))
+                        <div class="md:col-span-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 mt-4">
+                            <h4 class="text-sm font-semibold text-blue-800 mb-2 flex items-center">
+                                <svg class="w-4 h-4 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                </svg>
+                                Informasi Pengiriman
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                <div>
+                                    <p class="text-blue-600 mb-1">Jasa Pengiriman:</p>
+                                    <p class="font-semibold text-blue-800">{{ $order->nama_jasa_pengiriman }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-blue-600 mb-1">Nomor Resi:</p>
+                                    <p class="font-semibold text-blue-800 font-mono tracking-wide">{{ $order->nomor_resi }}</p>
+                                </div>
+                            </div>
+                            @if($order->status_pesanan == 'dikirim')
+                            <div class="mt-3 pt-3 border-t border-blue-200">
+                                <p class="text-xs text-blue-600">
+                                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Pesanan sedang dalam perjalanan. Anda dapat melacak paket dengan nomor resi di atas.
+                                </p>
+                            </div>
+                            @endif
+                        </div>
+                        @endif
                     </div>
                 </div>
 
@@ -161,23 +193,32 @@
                 <div class="bg-white rounded-2xl shadow-lg p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Ringkasan Pesanan</h3>
                     
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center py-2">
                             <span class="text-gray-600">Tanggal Pesanan:</span>
                             <span class="font-medium">{{ $order->tanggal_pesanan->format('d M Y') }}</span>
                         </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Subtotal:</span>
-                            <span class="font-medium">Rp {{ number_format($order->total_harga_produk, 0, ',', '.') }}</span>
+                        
+                        <div class="bg-gray-50 rounded-lg p-3 space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Subtotal Produk:</span>
+                                <span class="font-medium">Rp {{ number_format($order->total_harga_produk, 0, ',', '.') }}</span>
+                            </div>
+                            @if($order->biaya_ongkir)
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Biaya Ongkir:</span>
+                                <span class="font-medium text-orange-600">Rp {{ number_format($order->biaya_ongkir, 0, ',', '.') }}</span>
+                            </div>
+                            @else
+                            <div class="flex justify-between">
+                                <span class="text-gray-500 italic">Biaya Ongkir:</span>
+                                <span class="text-gray-500 italic">Belum ditentukan</span>
+                            </div>
+                            @endif
                         </div>
-                        @if($order->biaya_ongkir)
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Ongkos Kirim:</span>
-                            <span class="font-medium">Rp {{ number_format($order->biaya_ongkir, 0, ',', '.') }}</span>
-                        </div>
-                        @endif
-                        <div class="flex justify-between border-t pt-2 text-lg font-bold">
-                            <span>Total:</span>
+                        
+                        <div class="flex justify-between items-center border-t pt-3 text-lg font-bold">
+                            <span class="text-gray-900">Total Keseluruhan:</span>
                             <span class="text-green-600">Rp {{ number_format($order->total_keseluruhan ?: $order->total_harga_produk, 0, ',', '.') }}</span>
                         </div>
                     </div>
