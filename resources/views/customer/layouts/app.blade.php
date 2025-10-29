@@ -63,14 +63,14 @@
             bottom: 20px;
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 24px;
-            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+            font-size: 20px;
+            box-shadow: 0 10px 25px rgba(31, 41, 55, 0.3);
             cursor: pointer;
             z-index: 998;
             transition: all 0.3s ease;
@@ -78,24 +78,11 @@
         
         .floating-btn:hover {
             transform: scale(1.1);
-            box-shadow: 0 15px 35px rgba(34, 197, 94, 0.4);
+            box-shadow: 0 15px 35px rgba(31, 41, 55, 0.4);
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
         }
         
-        .cart-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #ef4444;
-            color: white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-        }
+
         
         .category-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
@@ -196,8 +183,14 @@
                     </div>
 
                     @auth
-                        <a href="{{ route('customer.cart') }}" class="text-gray-700 hover:text-green-600 font-medium transition-colors">
+                        <a href="{{ route('customer.cart') }}" class="flex items-center text-gray-700 hover:text-green-600 font-medium transition-colors">
+                            <i class="fas fa-shopping-cart mr-1"></i>
                             Keranjang
+                            @if(($cartCount ?? 0) > 0)
+                                <span id="cartBadge" class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[20px] text-center">{{ $cartCount }}</span>
+                            @else
+                                <span id="cartBadge" class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[20px] text-center" style="display: none;">0</span>
+                            @endif
                         </a>
                     @endauth
                 </div>
@@ -222,16 +215,19 @@
                             </button>
                             <div x-show="open" @click.away="open = false" x-transition
                                  class="absolute top-full right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border">
-                                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600">
+                                <a href="{{ route('customer.profile.show') }}" class="block px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600">
+                                    <i class="fas fa-user w-4 mr-2"></i>
                                     Profil
                                 </a>
-                                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600">
+                                <a href="{{ route('customer.orders.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600">
+                                    <i class="fas fa-shopping-bag w-4 mr-2"></i>
                                     Pesanan Saya
                                 </a>
                                 <hr class="my-1">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50">
+                                        <i class="fas fa-sign-out-alt w-4 mr-2"></i>
                                         Keluar
                                     </button>
                                 </form>
@@ -251,8 +247,7 @@
     <!-- Floating Action Button -->
     @auth
     <div class="floating-btn" onclick="toggleSidebar()" id="floatingBtn">
-        <i class="fas fa-shopping-cart"></i>
-        <div class="cart-badge" id="cartBadge">{{ $cartCount ?? 0 }}</div>
+        <i class="fas fa-bars"></i>
     </div>
     @endauth
 
@@ -280,17 +275,7 @@
                     </div>
                 </a>
 
-                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-green-50 transition-colors">
-                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-list-alt text-blue-600"></i>
-                    </div>
-                    <div>
-                        <div class="font-medium text-gray-900">Pesanan Saya</div>
-                        <div class="text-sm text-gray-500">Lihat status pesanan</div>
-                    </div>
-                </a>
-
-                <a href="{{ route('customer.orders.index') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-green-50 transition-colors">
+                <a href="{{ route('customer.orders.index') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-50 transition-colors">
                     <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-shopping-bag text-blue-600"></i>
                     </div>
@@ -300,7 +285,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('customer.profile.show') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-green-50 transition-colors">
+                <a href="{{ route('customer.profile.show') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-yellow-50 transition-colors">
                     <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-user text-yellow-600"></i>
                     </div>
@@ -316,7 +301,7 @@
                 <h4 class="font-semibold text-gray-900 mb-3">Kategori</h4>
                 <div class="space-y-2">
                     @php
-                        $sidebarCategories = \App\Models\KategoriProduk::where('aktif', true)->get();
+                        $sidebarCategories = \App\Models\Kategori::where('aktif', true)->get();
                     @endphp
                     @foreach($sidebarCategories as $category)
                         <a href="{{ route('customer.category', $category->id) }}" 
@@ -410,8 +395,20 @@
 
         // Update cart count
         function updateCartCount(count) {
-            document.getElementById('cartBadge').textContent = count;
-            document.getElementById('sidebarCartCount').textContent = count;
+            const badge = document.getElementById('cartBadge');
+            const sidebarCount = document.getElementById('sidebarCartCount');
+            
+            badge.textContent = count;
+            if (sidebarCount) {
+                sidebarCount.textContent = count;
+            }
+            
+            // Show/hide badge based on count
+            if (count > 0) {
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
         }
 
         // Add to Cart
