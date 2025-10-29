@@ -378,32 +378,24 @@
                     @if($pembayaranProduk->bukti_pembayaran)
                     <div class="bg-white rounded-xl p-4 border border-green-100">
                         <h4 class="font-semibold text-gray-800 mb-4">Bukti Transfer</h4>
-                        <div class="relative group">
+                        <div class="mb-3">
                             <img src="{{ Storage::url($pembayaranProduk->bukti_pembayaran) }}" 
                                  alt="Bukti Pembayaran Produk" 
-                                 class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity" 
-                                 onclick="openPaymentModal('{{ Storage::url($pembayaranProduk->bukti_pembayaran) }}', 'Bukti Pembayaran Produk')">
-                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-lg flex items-center justify-center">
-                                <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
-                            </div>
+                                 class="w-full h-32 object-cover rounded-lg">
                         </div>
-                        <div class="flex space-x-2 mt-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <button onclick="openPaymentModal('{{ Storage::url($pembayaranProduk->bukti_pembayaran) }}', 'Bukti Pembayaran Produk')" 
-                                    class="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors">
-                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    class="w-full bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors flex items-center justify-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                 </svg>
-                                Lihat
                             </button>
                             <a href="{{ Storage::url($pembayaranProduk->bukti_pembayaran) }}" download 
-                               class="flex-1 bg-green-100 text-green-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-green-200 transition-colors text-center">
-                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="w-full bg-green-100 text-green-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-green-200 transition-colors flex items-center justify-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
-                                Download
                             </a>
                         </div>
                     </div>
@@ -492,29 +484,23 @@
                                 @if($pembayaranOngkir->bukti_pembayaran)
                                 <div class="bg-white rounded-xl p-4 border border-purple-100">
                                     <h4 class="font-semibold text-gray-800 mb-4">Bukti Transfer</h4>
-                                    <div class="relative group">
+                                    <div class="mb-3">
                                         <img src="{{ Storage::url($pembayaranOngkir->bukti_pembayaran) }}" 
                                              alt="Bukti Pembayaran Ongkir" 
-                                             class="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity" 
-                                             onclick="openPaymentModal('{{ Storage::url($pembayaranOngkir->bukti_pembayaran) }}', 'Bukti Pembayaran Ongkir')">
-                                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-lg flex items-center justify-center">
-                                            <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                            </svg>
-                                        </div>
+                                             class="w-full h-32 object-cover rounded-lg">
                                     </div>
-                                    <div class="flex space-x-2 mt-3">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                         <button onclick="openPaymentModal('{{ Storage::url($pembayaranOngkir->bukti_pembayaran) }}', 'Bukti Pembayaran Ongkir')" 
-                                                class="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors">
-                                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                class="w-full bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors flex items-center justify-center">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                             </svg>
                                             Lihat
                                         </button>
                                         <a href="{{ Storage::url($pembayaranOngkir->bukti_pembayaran) }}" download 
-                                           class="flex-1 bg-purple-100 text-purple-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-purple-200 transition-colors text-center">
-                                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                           class="w-full bg-purple-100 text-purple-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-purple-200 transition-colors flex items-center justify-center">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                             </svg>
                                             Download

@@ -142,45 +142,225 @@
                     </div>
                 </div>
 
-                <!-- Payment Information -->
-                @if($order->pembayaran)
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                        </svg>
-                        Informasi Pembayaran
-                    </h3>
-                    
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="font-medium">{{ $order->pembayaran->metode_pembayaran }}</span>
-                            <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full 
-                                @if($order->pembayaran->status_pembayaran === 'dikonfirmasi') bg-green-100 text-green-800
-                                @elseif($order->pembayaran->status_pembayaran === 'menunggu_konfirmasi') bg-yellow-100 text-yellow-800
-                                @elseif($order->pembayaran->status_pembayaran === 'ditolak') bg-red-100 text-red-800
-                                @else bg-gray-100 text-gray-800 @endif">
-                                {{ ucfirst(str_replace('_', ' ', $order->pembayaran->status_pembayaran)) }}
-                            </span>
+                <!-- Payment Information Carousel -->
+                @php 
+                    $pembayaranProduk = $order->getPembayaranProduk(); 
+                    $pembayaranOngkir = $order->getPembayaranOngkir();
+                @endphp
+                @if($pembayaranProduk || $pembayaranOngkir)
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-blue-100">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-blue-100 p-3 rounded-xl mr-4">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-blue-800">Informasi Pembayaran</h3>
+                                <p class="text-sm text-blue-600">Pembayaran produk dan ongkir</p>
+                            </div>
                         </div>
                         
-                        <p class="text-sm text-gray-600 mb-2">Jumlah: <span class="font-medium">Rp {{ number_format($order->pembayaran->jumlah_pembayaran, 0, ',', '.') }}</span></p>
-                        
-                        @if($order->pembayaran->bukti_pembayaran)
-                            <div class="mb-2">
-                                <p class="text-sm text-gray-600 mb-2">Bukti Pembayaran:</p>
-                                <img src="{{ Storage::url($order->pembayaran->bukti_pembayaran) }}" alt="Bukti Pembayaran" class="w-32 h-32 object-cover rounded-lg border cursor-pointer" onclick="showImageModal('{{ Storage::url($order->pembayaran->bukti_pembayaran) }}')">
+                        <!-- Tab Navigation -->
+                        <div class="flex flex-wrap gap-2">
+                            @if($pembayaranProduk)
+                            <button onclick="switchPaymentTab('produk')" 
+                                    id="tab-produk"
+                                    class="px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 payment-tab active">
+                                <span class="flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    Produk
+                                </span>
+                            </button>
+                            @endif
+                            @if($pembayaranOngkir)
+                            <button onclick="switchPaymentTab('ongkir')" 
+                                    id="tab-ongkir"
+                                    class="px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 payment-tab {{ !$pembayaranProduk ? 'active' : '' }}">
+                                <span class="flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                    </svg>
+                                    Ongkir
+                                </span>
+                            </button>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Carousel Container -->
+                    <div class="relative overflow-hidden p-6 payment-carousel">
+                        <!-- Pembayaran Produk Panel -->
+                        @if($pembayaranProduk)
+                        <div id="panel-produk" class="payment-panel {{ $pembayaranProduk ? 'active' : '' }}">
+                            <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="text-lg font-semibold text-green-800">Pembayaran Produk</h4>
+                                    <span class="inline-flex px-4 py-2 text-sm font-semibold rounded-full {{ $pembayaranProduk->status_pembayaran == 'dikonfirmasi' ? 'bg-green-100 text-green-800' : ($pembayaranProduk->status_pembayaran == 'ditolak' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                                        {{ ucwords(str_replace('_', ' ', $pembayaranProduk->status_pembayaran)) }}
+                                    </span>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <!-- Info Pembayaran -->
+                                    <div class="bg-white rounded-xl p-4 border border-green-100">
+                                        <h4 class="font-semibold text-gray-800 mb-4">Informasi Pembayaran</h4>
+                                        <div class="space-y-3">
+                                            @if($pembayaranProduk->rekeningAdmin)
+                                            <div>
+                                                <dt class="text-sm font-medium text-gray-500">Rekening Tujuan</dt>
+                                                <dd class="mt-1 text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                                                    <div class="font-medium">{{ $pembayaranProduk->rekeningAdmin->nama_bank }}</div>
+                                                    <div class="font-mono text-xs">{{ $pembayaranProduk->rekeningAdmin->nomor_rekening }}</div>
+                                                    <div class="text-xs text-gray-600">a.n. {{ $pembayaranProduk->rekeningAdmin->nama_pemilik }}</div>
+                                                </dd>
+                                            </div>
+                                            @endif
+                                            
+                                            <div>
+                                                <dt class="text-sm font-medium text-gray-500">Jumlah Pembayaran</dt>
+                                                <dd class="mt-1 text-lg font-bold text-green-600">
+                                                    Rp {{ number_format($pembayaranProduk->jumlah_pembayaran, 0, ',', '.') }}
+                                                </dd>
+                                            </div>
+                                            
+                                            @if($pembayaranProduk->tanggal_upload_bukti)
+                                            <div>
+                                                <dt class="text-sm font-medium text-gray-500">Tanggal Upload</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">
+                                                    {{ $pembayaranProduk->tanggal_upload_bukti->format('d M Y H:i') }}
+                                                </dd>
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Bukti Transfer -->
+                                    @if($pembayaranProduk->bukti_pembayaran)
+                                    <div class="bg-white rounded-xl p-4 border border-green-100">
+                                        <h4 class="font-semibold text-gray-800 mb-4">Bukti Transfer</h4>
+                                        <div class="mb-3">
+                                            <img src="{{ Storage::url($pembayaranProduk->bukti_pembayaran) }}" 
+                                                 alt="Bukti Pembayaran Produk" 
+                                                 class="w-full h-32 object-cover rounded-lg">
+                                        </div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <button onclick="showImageModal('{{ Storage::url($pembayaranProduk->bukti_pembayaran) }}')" 
+                                                    class="w-full bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors flex items-center justify-center">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                </svg>
+                                                Lihat
+                                            </button>
+                                            <a href="{{ Storage::url($pembayaranProduk->bukti_pembayaran) }}" download 
+                                               class="w-full bg-green-100 text-green-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-green-200 transition-colors flex items-center justify-center">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                                Download
+                                            </a>
+                                        </div>
+                                    </div>
+                                    @endif
+                                </div>
+                                
+                                @if($pembayaranProduk->alasan_penolakan)
+                                <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                    <h4 class="text-sm font-semibold text-red-800 mb-2">Alasan Penolakan:</h4>
+                                    <p class="text-sm text-red-700">{{ $pembayaranProduk->alasan_penolakan }}</p>
+                                </div>
+                                @endif
                             </div>
+                        </div>
                         @endif
-                        
-                        @if($order->pembayaran->tanggal_upload_bukti)
-                            <p class="text-xs text-gray-500">Diupload: {{ $order->pembayaran->tanggal_upload_bukti->format('d M Y H:i') }}</p>
-                        @endif
-                        
-                        @if($order->pembayaran->alasan_penolakan)
-                            <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded">
-                                <p class="text-sm text-red-700"><strong>Alasan Penolakan:</strong> {{ $order->pembayaran->alasan_penolakan }}</p>
+
+                        <!-- Pembayaran Ongkir Panel -->
+                        @if($pembayaranOngkir)
+                        <div id="panel-ongkir" class="payment-panel {{ !$pembayaranProduk ? 'active' : '' }}">
+                            <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-4 border border-purple-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="text-lg font-semibold text-purple-800">Pembayaran Ongkir</h4>
+                                    <span class="inline-flex px-4 py-2 text-sm font-semibold rounded-full {{ $pembayaranOngkir->status_pembayaran == 'dikonfirmasi' ? 'bg-green-100 text-green-800' : ($pembayaranOngkir->status_pembayaran == 'ditolak' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800') }}">
+                                        {{ ucwords(str_replace('_', ' ', $pembayaranOngkir->status_pembayaran)) }}
+                                    </span>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <!-- Info Pembayaran -->
+                                    <div class="bg-white rounded-xl p-4 border border-purple-100">
+                                        <h4 class="font-semibold text-gray-800 mb-4">Informasi Pembayaran</h4>
+                                        <div class="space-y-3">
+                                            @if($pembayaranOngkir->rekeningAdmin)
+                                            <div>
+                                                <dt class="text-sm font-medium text-gray-500">Rekening Tujuan</dt>
+                                                <dd class="mt-1 text-sm text-gray-900 bg-gray-50 p-2 rounded">
+                                                    <div class="font-medium">{{ $pembayaranOngkir->rekeningAdmin->nama_bank }}</div>
+                                                    <div class="font-mono text-xs">{{ $pembayaranOngkir->rekeningAdmin->nomor_rekening }}</div>
+                                                    <div class="text-xs text-gray-600">a.n. {{ $pembayaranOngkir->rekeningAdmin->nama_pemilik }}</div>
+                                                </dd>
+                                            </div>
+                                            @endif
+                                            
+                                            <div>
+                                                <dt class="text-sm font-medium text-gray-500">Jumlah Pembayaran</dt>
+                                                <dd class="mt-1 text-lg font-bold text-purple-600">
+                                                    Rp {{ number_format($pembayaranOngkir->jumlah_pembayaran, 0, ',', '.') }}
+                                                </dd>
+                                            </div>
+                                            
+                                            @if($pembayaranOngkir->tanggal_upload_bukti)
+                                            <div>
+                                                <dt class="text-sm font-medium text-gray-500">Tanggal Upload</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">
+                                                    {{ $pembayaranOngkir->tanggal_upload_bukti->format('d M Y H:i') }}
+                                                </dd>
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Bukti Transfer -->
+                                    @if($pembayaranOngkir->bukti_pembayaran)
+                                    <div class="bg-white rounded-xl p-4 border border-purple-100">
+                                        <h4 class="font-semibold text-gray-800 mb-4">Bukti Transfer</h4>
+                                        <div class="mb-3">
+                                            <img src="{{ Storage::url($pembayaranOngkir->bukti_pembayaran) }}" 
+                                                 alt="Bukti Pembayaran Ongkir" 
+                                                 class="w-full h-32 object-cover rounded-lg">
+                                        </div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <button onclick="showImageModal('{{ Storage::url($pembayaranOngkir->bukti_pembayaran) }}')" 
+                                                    class="w-full bg-blue-100 text-blue-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-blue-200 transition-colors flex items-center justify-center">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                </svg>
+                                                Lihat
+                                            </button>
+                                            <a href="{{ Storage::url($pembayaranOngkir->bukti_pembayaran) }}" download 
+                                               class="w-full bg-purple-100 text-purple-700 py-2 px-3 rounded-lg text-sm font-medium hover:bg-purple-200 transition-colors flex items-center justify-center">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                                Download
+                                            </a>
+                                        </div>
+                                    </div>
+                                    @endif
+                                </div>
+                                
+                                @if($pembayaranOngkir->alasan_penolakan)
+                                <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                    <h4 class="text-sm font-semibold text-red-800 mb-2">Alasan Penolakan:</h4>
+                                    <p class="text-sm text-red-700">{{ $pembayaranOngkir->alasan_penolakan }}</p>
+                                </div>
+                                @endif
                             </div>
+                        </div>
                         @endif
                     </div>
                 </div>
@@ -283,7 +463,7 @@
 </div>
 
 <!-- Image Modal -->
-<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-lg max-w-2xl max-h-full overflow-auto">
         <div class="p-4">
             <div class="flex justify-between items-center mb-4">
@@ -300,13 +480,42 @@
 </div>
 
 <script>
+// Payment tab switching
+function switchPaymentTab(tabName) {
+    // Hide all panels
+    document.querySelectorAll('.payment-panel').forEach(panel => {
+        panel.classList.remove('active');
+    });
+    
+    // Remove active class from all tabs
+    document.querySelectorAll('.payment-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Show selected panel
+    const selectedPanel = document.getElementById(`panel-${tabName}`);
+    if (selectedPanel) {
+        selectedPanel.classList.add('active');
+    }
+    
+    // Add active class to selected tab
+    const selectedTab = document.getElementById(`tab-${tabName}`);
+    if (selectedTab) {
+        selectedTab.classList.add('active');
+    }
+}
+
 function showImageModal(imageUrl) {
     document.getElementById('modalImage').src = imageUrl;
-    document.getElementById('imageModal').classList.remove('hidden');
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
 }
 
 function closeImageModal() {
-    document.getElementById('imageModal').classList.add('hidden');
+    const modal = document.getElementById('imageModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
 }
 
 // Close modal when clicking outside
@@ -316,4 +525,45 @@ document.getElementById('imageModal').addEventListener('click', function(e) {
     }
 });
 </script>
+
+<style>
+.payment-tab {
+    @apply px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer;
+    @apply bg-white text-gray-600 border border-gray-200 hover:bg-blue-50 hover:text-blue-600;
+}
+
+.payment-tab.active {
+    @apply bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-600;
+    @apply shadow-lg transform scale-105;
+}
+
+.payment-panel {
+    @apply transition-all duration-300 ease-in-out;
+    opacity: 0;
+    transform: translateX(20px);
+    display: none;
+}
+
+.payment-panel.active {
+    opacity: 1;
+    transform: translateX(0);
+    display: block;
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+.payment-carousel {
+    min-height: 300px;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+</style>
 @endsection
